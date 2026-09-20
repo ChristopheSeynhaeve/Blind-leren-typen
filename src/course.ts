@@ -15,8 +15,15 @@ const definitions = [
   ['Hoofdletters en punten', 'Houd Shift in met de andere hand. De punt typ je met Shift + puntkomma.', '.', 'De puntjes op de i', 'Ik leer typen. Dit gaat al goed.', 'Elke dag een beetje oefenen helpt. Neem rustig de tijd.'],
   ['Je eerste verhaal', 'Combineer alle letters met hoofdletters, punten en komma’s.', ',', 'De puntjes op de i', 'Hallo, wat fijn dat je er bent. We gaan samen aan de slag.', 'De zon schijnt door het raam. Ik zet een kop thee, schuif mijn stoel aan en begin te typen. Met elke les gaat het een beetje beter.'],
 ] as const;
+// Eerst elke beweging twee keer na elkaar, daarna twee rondes met afwisseling.
+// Zo komt elke toetscombinatie vier keer aan bod in een voorspelbaar ritme.
+function repetitionDrill(drill: string): string {
+  const focused = drill.split(' ').flatMap(group => [group, group]).join(' ');
+  return `${focused} ${drill} ${drill}`;
+}
+
 export const lessons: Lesson[] = definitions.map(([title, description, keys, stage, drill, reading], i) => ({id:`lesson-${i+1}`, title, description, keys, stage, exercises: [
-  {title: i < 12 ? 'Verken de toetsen' : 'Verken de zinnen', text:drill},
+  {title: i < 12 ? 'Verken de toetsen' : 'Verken de zinnen', text:i < 11 ? repetitionDrill(drill) : drill},
   {title: i < 4 ? 'Vind je ritme' : 'Woorden & ritme', text:reading},
   {title:'Alles samen', text:i < 4 ? `${drill} ${reading}` : `${reading} ${i < 12 ? reading : drill}`},
 ]}));
