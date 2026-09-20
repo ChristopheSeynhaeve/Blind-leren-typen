@@ -1,6 +1,6 @@
 # Letterlijk
 
-Nederlandstalige typtrainer voor Belgisch AZERTY. 14 lessen, 42 vrij selecteerbare oefeningen en voortgang in localStorage. Geen backend, database of account.
+Nederlandstalige typtrainer voor Belgisch AZERTY. 15 lessen, 45 vrij selecteerbare oefeningen en voortgang in localStorage. Geen backend, database of account.
 
 ## Lokaal starten
 
@@ -44,7 +44,7 @@ Cloudflare installeert dependencies op basis van `package-lock.json`. Elke push 
 
 ## Lesmethode
 
-Gebaseerd op de basisrijmethode zoals beschreven door [TypeMission](https://www.typingmission.com/nl-be/typemission-voor-scholen/typemethode) en de opbouw basisrij → bovenrij → onderrij van [TypingFast België](https://typingfast.net/be/lessons/). De precieze lettergroepen en oefenteksten zijn zelf samengesteld. Eerst F/J, D/K, QS/LM en G/H; daarna bovenrij, onderrij, hoofdletters en leestekens. Vanaf de eerste klinkers worden echte Nederlandse woorden gebruikt. Alle teksten blijven binnen de al aangeleerde tekens. Cijfers en accenten vallen buiten deze versie.
+Gebaseerd op de basisrijmethode zoals beschreven door [TypeMission](https://www.typingmission.com/nl-be/typemission-voor-scholen/typemethode) en de opbouw basisrij → bovenrij → onderrij van [TypingFast België](https://typingfast.net/be/lessons/). De precieze lettergroepen en oefenteksten zijn zelf samengesteld. Eerst F/J, D/K, S/L, Q/M en G/H; daarna bovenrij, onderrij, hoofdletters en leestekens. Vanaf de eerste klinkers worden echte Nederlandse woorden gebruikt. Alle teksten blijven binnen de al aangeleerde tekens. Cijfers en accenten vallen buiten deze versie.
 
 Een oefening slaagt bij minimaal 95% nauwkeurigheid. Verkeerde aanslagen tellen mee, de cursor wacht op het juiste teken. De klok pauzeert bij focusverlies. Snelheid gebruikt vijf tekens per woord. Herhalen blijft altijd mogelijk.
 

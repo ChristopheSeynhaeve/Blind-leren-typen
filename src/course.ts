@@ -2,7 +2,8 @@ export type Lesson = { id: string; title: string; description: string; keys: str
 const definitions = [
   ['Je eerste toetsen', 'Vind de voelbare streepjes op F en J. Hier rusten je wijsvingers.', 'fj', 'De basisrij', 'fj jf ff jj fj jf', 'fff jjj fjf jfj ffj jjf'],
   ['Een vinger verder', 'Laat je middelvingers rusten op D en K. Houd je handen ontspannen.', 'dk', 'De basisrij', 'dk kd fd jk df kj', 'fdk jkd dfd kjk fj dk'],
-  ['De basisrij compleet', 'Voeg je ringvingers en pinken toe: links Q en S, rechts L en M.', 'qslm', 'De basisrij', 'qsdf jklm qs df jk lm', 'sl ls dm md qf jm qs kl'],
+  ['De ringvingers', 'Voeg je ringvingers toe: links S en rechts L. Je pinken komen in de volgende les aan bod.', 'sl', 'De basisrij', 'ds sd kl lk sl ls', 'sdf jkl sl ls dsl kls'],
+  ['De pinken: basisrij compleet', 'Voeg je pinken toe: links Q en rechts M. Nu rusten al je vingers op de basisrij.', 'qm', 'De basisrij', 'qs sq lm ml qf jm', 'qsdf jklm qm mq qsf mlk'],
   ['Naar het midden', 'Je wijsvingers bewegen naar G en H en keren terug naar F en J.', 'gh', 'De basisrij', 'fg jh gf hj fgf jhj', 'gh hg dfgh jhkl qsf mjh'],
   ['Je eerste woorden', 'Reik met je linkerpink naar A en je middelvinger naar E.', 'ae', 'Woorden bouwen', 'fa af de ed ka ak le el', 'de les de dag de jas de kaas de haas de smaak'],
   ['Meer om te lezen', 'Gebruik je ringvinger voor Z en je wijsvinger voor R.', 'zr', 'Woorden bouwen', 'sz zs fr rf za re er', 'de zee de maker de aarde de zaal de ezel'],
@@ -22,10 +23,12 @@ function repetitionDrill(drill: string): string {
   return `${focused} ${drill} ${drill}`;
 }
 
-export const lessons: Lesson[] = definitions.map(([title, description, keys, stage, drill, reading], i) => ({id:`lesson-${i+1}`, title, description, keys, stage, exercises: [
-  {title: i < 12 ? 'Verken de toetsen' : 'Verken de zinnen', text:i < 11 ? repetitionDrill(drill) : drill},
-  {title: i < 4 ? 'Vind je ritme' : 'Woorden & ritme', text:reading},
-  {title:'Alles samen', text:i < 4 ? `${drill} ${reading}` : `${reading} ${i < 12 ? reading : drill}`},
+// IDs blijven stabiel voor opgeslagen resultaten: de nieuwe ringvingerles krijgt
+// ID 15, de pinkenles behoudt ID 3 van de oorspronkelijke volledige basisrij.
+export const lessons: Lesson[] = definitions.map(([title, description, keys, stage, drill, reading], i) => ({id:`lesson-${i === 2 ? 15 : i < 2 ? i + 1 : i}`, title, description, keys, stage, exercises: [
+  {title: stage === 'De puntjes op de i' ? 'Verken de zinnen' : 'Verken de toetsen', text:/[a-z]/.test(keys) ? repetitionDrill(drill) : drill},
+  {title: stage === 'De basisrij' ? 'Vind je ritme' : 'Woorden & ritme', text:stage === 'De basisrij' ? Array(4).fill(reading).join(' ') : reading},
+  {title:'Alles samen', text:stage === 'De basisrij' ? `${drill} ${reading}` : `${reading} ${stage === 'De puntjes op de i' ? drill : reading}`},
 ]}));
 export const exerciseId = (lesson: number, exercise: number) => `${lessons[lesson].id}-${exercise}`;
 export const totalExercises = lessons.reduce((sum, lesson) => sum + lesson.exercises.length, 0);

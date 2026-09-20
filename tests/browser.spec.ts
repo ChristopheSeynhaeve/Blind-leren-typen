@@ -1,5 +1,24 @@
 import { test, expect } from '@playwright/test';
 import { lessons } from '../src/course';
+import { STORAGE_KEY, calculateResult } from '../src/progress';
+
+test('split lesson order, saved lesson history and final navigation', async ({ page }) => {
+ await page.goto('http://localhost:5173');
+ await page.evaluate(({key, result}) => localStorage.setItem(key, JSON.stringify({'lesson-4-0':[result]})), {key: STORAGE_KEY, result:calculateResult(100,100,60000)});
+ await page.reload();
+ await expect(page.locator('.nav-count')).toHaveText('15');
+ await expect(page.locator('[data-lesson="2"]')).toContainText('De ringvingers');
+ await expect(page.locator('[data-lesson="3"]')).toContainText('De pinken');
+ await page.getByRole('button',{name:'Mijn voortgang'}).click();
+ await expect(page.locator('tbody')).toContainText('Naar het midden');
+ await page.getByRole('button',{name:'Mijn lessen'}).click();
+ await page.locator('[data-lesson="14"]').click();
+ await page.locator('[data-start="2"]').click();
+ await expect(page.locator('.exercise-header')).toContainText('Les 15 van 15');
+ await page.locator('#typing-input').pressSequentially(lessons[14].exercises[2].text);
+ await page.getByRole('button',{name:'Naar je voortgang'}).click();
+ await expect(page.getByRole('heading',{name:'Jouw vooruitgang.'})).toBeVisible();
+});
 
 test('complete, persist, repeat and filter exercises', async ({ page }) => {
  await page.goto('http://localhost:5173');
@@ -9,20 +28,20 @@ test('complete, persist, repeat and filter exercises', async ({ page }) => {
  await expect(page.getByRole('heading',{name:'Mooi gedaan!'})).toBeVisible();
  await expect(page.locator('.result-stats')).toContainText('100%');
  await page.reload();
- await expect(page.locator('.small-progress')).toContainText('1 van 42');
+ await expect(page.locator('.small-progress')).toContainText('1 van 45');
  await page.locator('[data-lesson="0"]').click();
  await expect(page.locator('[data-start="0"]')).toContainText('100%');
  await page.locator('[data-start="0"]').click();
  await page.locator('#typing-input').pressSequentially(lessons[0].exercises[0].text);
  await page.getByRole('button',{name:'Volgende oefening'}).click();
- await page.locator('#typing-input').pressSequentially('fff jjj fjf jfj ffj jjf');
+ await page.locator('#typing-input').pressSequentially(lessons[0].exercises[1].text);
  await page.getByRole('button',{name:'Volgende oefening'}).click();
  await page.locator('#typing-input').pressSequentially('fj jf ff jj fj jf fff jjj fjf jfj ffj jjf');
  await page.getByRole('button',{name:'Terug naar mijn lessen'}).click();
  await page.getByRole('button',{name:'Afgerond',exact:true}).click();
  await expect(page.locator('.lesson-row')).toHaveCount(1);
  await page.getByRole('button',{name:'Mijn voortgang'}).click();
- await expect(page.locator('.overview-card').first()).toContainText('3 / 42');
+ await expect(page.locator('.overview-card').first()).toContainText('3 / 45');
 });
 
 test('incorrect attempt, pause, reset and mobile layout',async({page})=>{
