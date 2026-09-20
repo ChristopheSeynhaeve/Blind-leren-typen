@@ -1,6 +1,38 @@
 import { test, expect } from '@playwright/test';
 import { lessons } from '../src/course';
-import { STORAGE_KEY, calculateResult } from '../src/progress';
+import { STORAGE_KEY, calculateResult, timeLimit } from '../src/progress';
+
+test('missed time goal recommends retry but allows continuing', async ({page})=>{
+ await page.clock.install();
+ await page.goto('http://localhost:5173');
+ await page.getByRole('button',{name:'Start je eerste oefening'}).click();
+ const text=lessons[0].exercises[0].text;
+ await page.locator('#typing-input').pressSequentially(text[0]);
+ await page.clock.runFor((timeLimit(text.length,lessons[0].stage)+1)*1000);
+ await expect(page.locator('#time-feedback')).toContainText('Tijdslimiet overschreden');
+ await page.locator('#typing-input').pressSequentially(text.slice(1));
+ await expect(page.getByRole('heading',{name:'Nog even oefenen'})).toBeVisible();
+ await expect(page.locator('.goal-met')).toContainText('Nauwkeurigheid');
+ await expect(page.locator('.goal-missed')).toContainText('Tijd:');
+ await expect(page.locator('#restart')).toHaveClass('primary');
+ await expect(page.locator('#next')).toHaveClass('secondary');
+ await page.getByRole('button',{name:'Terug naar mijn lessen'}).click();
+ await expect(page.locator('[data-start="0"] .retry-status')).toContainText('Nog niet behaald');
+ await page.locator('[data-start="0"]').click();
+ await page.locator('#typing-input').pressSequentially('xxxxxxxxxx'+text);
+ await expect(page.locator('.goal-missed')).toContainText('Nauwkeurigheid');
+ await page.getByRole('button',{name:'Volgende oefening'}).click();
+ await expect(page.getByRole('heading',{name:'Vind je ritme'})).toBeVisible();
+});
+
+test('new row exercises explain the finger and isolate Q-A first',async({page})=>{
+ await page.goto('http://localhost:5173');
+ await page.locator('[data-lesson="5"]').click();
+ await page.locator('[data-start="0"]').click();
+ await expect(page.locator('.movement-guide')).toContainText('Q ↔ A');
+ await expect(page.locator('.movement-guide')).toContainText('linkerpink');
+ await expect(page.locator('#typing-text')).toContainText('qa aq qa aq qa aq qa aq de ed');
+});
 
 test('split lesson order, saved lesson history and final navigation', async ({ page }) => {
  await page.goto('http://localhost:5173');

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { lessons, totalExercises } from '../src/course';
-import { parseProgress, calculateResult } from '../src/progress';
+import { parseProgress, calculateResult, timeLimit } from '../src/progress';
 
 test('every exercise uses only keys introduced so far',()=>{
  const known = new Set(' ');
@@ -37,8 +37,32 @@ test('invalid or corrupt browser storage is handled',()=>{
 });
 test('accuracy and speed include incorrect attempts and enforce completion threshold',()=>{
  assert.equal(calculateResult(100,100,60000).wpm,20);
- assert.equal(calculateResult(100,110,60000).accuracy,91);
+ assert.equal(calculateResult(100,110,60000).accuracy,90.9);
  assert.equal(calculateResult(100,110,60000).passed,false);
  assert.equal(calculateResult(95,100,60000).passed,true);
  assert.ok(Number.isFinite(calculateResult(1,1,0).wpm));
+});
+test('upper and lower row introduction isolates each new key with its own home key',()=>{
+ const expected: Record<string,string> = {a:'q',e:'d',z:'s',r:'f',i:'k',o:'l',t:'f',u:'j',p:'m',y:'j',v:'f',b:'f',n:'j',w:'s',x:'d',c:'f'};
+ for(const lesson of lessons) {
+  const groups=lesson.exercises[0].text.split(' ');
+  lesson.movements.forEach((m,index)=>{
+   assert.equal(m.home,expected[m.key]);
+   const isolated=groups.slice(index*8,index*8+8);
+   assert.equal(isolated.length,8);
+   for(const group of isolated)assert.ok(group===m.home+m.key||group===m.key+m.home);
+  });
+ }
+ assert.deepEqual(lessons[5].exercises[0].text.split(' ').slice(0,8),['qa','aq','qa','aq','qa','aq','qa','aq']);
+});
+test('both goals must pass, including exact accuracy and time boundaries',()=>{
+ assert.equal(calculateResult(95,100,60000,60).passed,true);
+ assert.equal(calculateResult(95,100,60001,60).passed,false);
+ assert.equal(calculateResult(949,1000,59000,60).passed,false);
+ assert.equal(calculateResult(100,100,61000,60).maxSeconds,60);
+ assert.equal(timeLimit(100,'De basisrij'),160);
+ assert.equal(timeLimit(100,'Woorden bouwen'),130);
+ assert.equal(timeLimit(1,'De puntjes op de i'),30);
+ const result=calculateResult(100,100,61000,60);
+ assert.deepEqual(parseProgress(JSON.stringify({'lesson-1-0':[result]})),{'lesson-1-0':[result]});
 });

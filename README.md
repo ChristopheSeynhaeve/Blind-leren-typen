@@ -46,7 +46,9 @@ Cloudflare installeert dependencies op basis van `package-lock.json`. Elke push 
 
 Gebaseerd op de basisrijmethode zoals beschreven door [TypeMission](https://www.typingmission.com/nl-be/typemission-voor-scholen/typemethode) en de opbouw basisrij → bovenrij → onderrij van [TypingFast België](https://typingfast.net/be/lessons/). De precieze lettergroepen en oefenteksten zijn zelf samengesteld. Eerst F/J, D/K, S/L, Q/M en G/H; daarna bovenrij, onderrij, hoofdletters en leestekens. Vanaf de eerste klinkers worden echte Nederlandse woorden gebruikt. Alle teksten blijven binnen de al aangeleerde tekens. Cijfers en accenten vallen buiten deze versie.
 
-Een oefening slaagt bij minimaal 95% nauwkeurigheid. Verkeerde aanslagen tellen mee, de cursor wacht op het juiste teken. De klok pauzeert bij focusverlies. Snelheid gebruikt vijf tekens per woord. Herhalen blijft altijd mogelijk.
+Een oefening slaagt bij minimaal 95% nauwkeurigheid en binnen de aangegeven maximale duur. De tijdslimiet wordt berekend met 8 woorden/minuut voor de basisrij, 10 voor woorden bouwen, 12 voor vlotter typen en 15 voor hoofdletters en leestekens, plus 10 seconden speling (minimaal 30 seconden). Dit zijn eigen, rustige oefendoelen. Verkeerde aanslagen tellen mee, de cursor wacht op het juiste teken. De klok pauzeert bij focusverlies. Snelheid gebruikt vijf tekens per woord. De oefening stopt niet als de tijd om is. Bij een gemist doel wordt opnieuw oefenen aanbevolen, maar doorgaan blijft mogelijk. Oude resultaten behouden hun eerdere beoordeling.
+
+Nieuwe letters op de boven- en onderrij beginnen met acht paren per vinger, bijvoorbeeld eerst alleen Q-A en A-Q, dan D-E en E-D. Pas daarna worden vingers gecombineerd. De app geeft de juiste vinger aan, maar kan niet meten welke fysieke vinger de cursist gebruikt.
 
 ## Lokale gegevens
 
