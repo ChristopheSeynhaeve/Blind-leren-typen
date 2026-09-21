@@ -1,6 +1,7 @@
 export type FingerMovement = { key: string; home: string; finger: string };
 export type Lesson = { id: string; title: string; description: string; keys: string; stage: string; movements: FingerMovement[]; exercises: { title: string; text: string }[] };
 const fingerMovements: Record<string, Omit<FingerMovement, 'key'>> = {
+  g: {home:'f', finger:'linkerwijsvinger'}, h: {home:'j', finger:'rechterwijsvinger'},
   a: {home:'q', finger:'linkerpink'}, e: {home:'d', finger:'linkermiddelvinger'},
   z: {home:'s', finger:'linkerringvinger'}, r: {home:'f', finger:'linkerwijsvinger'},
   i: {home:'k', finger:'rechtermiddelvinger'}, o: {home:'l', finger:'rechterringvinger'},
@@ -37,7 +38,7 @@ const combinedPractice = [
   'fgf jhj dfg hjk gh hg qsg mlh fgh jhg gfd hkj sg lh gs hl qg mh gq hm dfgh jhkl qsf mjh gfg hjh fghg jhgh qdfg mlkh ghs hgl fgj hjf qsdfg hjklm gh hg fg jh',
   'de dag de jas de haas de kaas de les de smaak de dame de maag de maas de sla de mama de massa de adem de ham de jam de sla de lak de hal de hak de heg de haag de lage la de lege fles de gammele gsm de gladde aal de smalle la',
   'de zee de zaal de ezel de maker de aarde de haas de kaas de rare les de rare jas de rare smaak de gare kaas de lege la de lage heg de gare kaas de ezel de gare sla de lage la de lege garage',
-  'ik lees de les de radio is mooi de giraffe is mooi de roos is rood de zee is laag de jas is grijs ik mis de kaas de ezel is gek de maker is klaar de haas is erg gek de doos is leeg de kamer is mooi de oma is daar ik lees graag de regel de olie is glad de olie is glad de dag is fris',
+  'ik lees de les de radio is mooi de giraffe is mooi de roos is rood de zee is laag de jas is grijs ik mis de kaas de ezel is gek de maker is klaar de haas is erg gek de doos is leeg de kamer is mooi de oma is daar ik lees graag de regel de olie is glad de mol is grijs de dag is fris',
   'de muis zit stil ik lees uit de kast de deur is toe de taart is klaar de stoel staat daar de kat rust hier ik eet kaas de auto staat stil de roos staat daar de muis gaat door het gras de meester leest de les uit ik maak de juiste keuze de sleutel ligt hier de grote tas is leeg het huis is grijs het huis is groot',
   'de poes slaapt op de mat de papegaai eet de sla ik typ de juiste regel de pop staat op de kast de pot staat klaar de piloot stuurt het toestel de puppy speelt met de stok de papa pakt de tas de poes kijkt uit het raam de muis kruipt door het gat de pyjama is geel de tulp staat op tafel de soep is klaar ik stap uit de auto de papegaai roept luid de poes spitst haar oor',
   'ik typ een brief de bomen staan in de tuin de buren praten buiten een vogel vliegt over het pad de bakker bakt een brood de bus stopt bij het plein ik neem mijn tas en stap naar buiten de bloemen staan in een vaas de brief ligt op tafel mijn broer leest een boek de kinderen spelen bij de boom de trein rijdt naar de stad ik begin met een korte regel en blijf rustig typen mijn vingers vinden de toetsen vanzelf',
@@ -47,17 +48,40 @@ const combinedPractice = [
   'Vandaag schrijf ik over een wandeling door het dorp. Bij de voordeur trek ik mijn jas aan, pak mijn tas en stap naar buiten. De lucht is fris, maar de zon voelt warm. Op de hoek staat de bakker al klaar. Ik koop een brood, twee koeken en een klein zakje koffie. Daarna wandel ik langs het plein. Een jongen zet zijn fiets tegen de muur, terwijl zijn zus naar hem zwaait. Bij de brug blijf ik even staan. Het water glinstert en een eend zwemt rustig voorbij. Verderop zit mijn buur op een bank. We praten over de tuin, het weer en onze plannen voor morgen. Dan loop ik terug naar huis. Ik leg het brood op tafel, hang mijn jas op en open het raam. De geur van verse koffie vult de kamer. Na het ontbijt ga ik achter mijn computer zitten. Ik schrijf mijn verhaal in korte zinnen. Mijn vingers bewegen rustig over de toetsen, terwijl ik naar het scherm blijf kijken. Als een woord lastig is, neem ik even de tijd. Aan het einde lees ik alles na. Ik ben blij met wat ik vandaag heb geoefend.',
 ] as const;
 
-function combinedExercise(original: string, extra: string): string {
-  const words = `${original} ${extra}`.split(' ');
+// Woordfamilies laten dezelfde beweging terugkomen in een andere context.
+const wordPractice = [
+  'as af de me la ma al ah dag dak dal dam das jas jam ham hal hak heg hel les leg lag lak gas gaf gal kas kam kal kaas haas maas maag laag laas gaaf kaak haak haal faal maak maal kaas dame adem massa mama lage lege glad fles smaak sla slak',
+  'as er ze de re ra ar arm erg era rem ram ras rag red rek reek raak raam raar haar haas kaas kaars ze zee zes zag zak zakje zaak zaag zaal zalf zelf ezel ezels zadel zager lager maker makelaar aarde garage graag laars klaar schaar',
+  'ik is of om os oh ei ai ma zo si mis mik dik dim lig lik lis los lol lok mol mos kom kok kos rol rok ros room roos rood mooi gooi kooi kilo olie radio oma iris solo giraffe grijs grijze meisje',
+  'te uit uil ui au toe tot tut tij tijd tijm tas tak taal taart thee thuis muis huis tuil tuit ruit rust ruis reis reus roer deur duur geel geul geur auto auteur stilte stoel stoer stuur straat sleutel meester keuze',
+  'typ pyjama yoga op pa pap pop pet pit pot pak pas pols poes poos peer paar pees poot poort park perk post soep sip sap stap stip stop top tip tap typ type typt pyjama puppy yoga papegaai papier piloot pupil paraplu',
+  'vis vuur val in en nu na nee net nat niet noot neus nest naam neem been boom beer boer boek bak bek bal bel bol bus buis buurt brief bloem braaf blijf boven buiten vlot vlak vol val vel veel vier vuur vis vies vast venster vinden vrienden',
+  'box mix code we wc was wat wie weg wel wil wol wij wijk wijn wiel wind werk warm water wonen waar zwaar zwart zwaai zwak zes box mix taxi extra examen exact textiel clown club code cola cool cake cel cent circa cirkel circus cactus camera cadeau chocolade',
+] as const;
+
+function practiceText(seed: string, extra: string, targetLength: number): string {
+  const words = `${seed} ${extra}`.trim().split(/\s+/);
   const result: string[] = [];
   let length = 0;
-  // Vijf keer de oorspronkelijke omvang, afgerond op een volledig woord.
-  for (let index = 0; length < original.length * 5 || (original.endsWith('.') && !result.at(-1)?.endsWith('.')); index++) {
+  // Rond af op een volledig woord, of een volledige zin bij leestekenlessen.
+  for (let index = 0; length < targetLength || (seed.endsWith('.') && !result.at(-1)?.endsWith('.')); index++) {
     const word = words[index % words.length];
     length += word.length + (result.length ? 1 : 0);
     result.push(word);
   }
   return result.join(' ');
+}
+
+function fingerPractice(drill: string): string {
+  const pairs = drill.split(' ').filter(group => group.length === 2);
+  // Korte wissels, terug naar de eerste toets, daarna een dubbele wissel.
+  return [
+    ...pairs,
+    ...pairs.map(([a,b]) => `${a}${b}${a}`),
+    ...pairs.map(([a,b]) => `${a}${b}${a}${b}`),
+    ...pairs.map(([a,b]) => `${b}${a}${a}`),
+    ...pairs.map(([a,b]) => `${a}${a}${b}${b}`),
+  ].join(' ');
 }
 // Eerst elke beweging twee keer na elkaar, daarna twee rondes met afwisseling.
 // Zo komt elke toetscombinatie vier keer aan bod in een voorspelbaar ritme.
@@ -76,12 +100,60 @@ function guidedDrill(keys: string, drill: string): string {
   return [...isolated, drill, drill].join(' ');
 }
 
-// IDs blijven stabiel voor opgeslagen resultaten: de nieuwe ringvingerles krijgt
-// ID 15, de pinkenles behoudt ID 3 van de oorspronkelijke volledige basisrij.
-export const lessons: Lesson[] = definitions.map(([title, description, keys, stage, drill, reading], i) => ({id:`lesson-${i === 2 ? 15 : i < 2 ? i + 1 : i}`, title, description, keys, stage, movements:[...keys].filter(key=>fingerMovements[key]).map(key=>({key,...fingerMovements[key]})), exercises: [
-  {title: stage === 'De puntjes op de i' ? 'Verken de zinnen' : 'Verken de toetsen', text:/[a-z]/.test(keys) ? guidedDrill(keys, drill) : drill},
-  {title: stage === 'De basisrij' ? 'Vind je ritme' : 'Woorden & ritme', text:stage === 'De basisrij' ? Array(4).fill(reading).join(' ') : reading},
-  {title:'Alles samen', text:combinedExercise(stage === 'De basisrij' ? `${drill} ${reading}` : `${reading} ${stage === 'De puntjes op de i' ? drill : reading}`, combinedPractice[i])},
-]}));
+// Elke groep gebruikt uitsluitend toetsen van dezelfde vinger. Eerst twee
+// toetsen, daarna drie en vier; de nieuwe toets blijft steeds terugkomen.
+function sameFingerRhythm(keys: string, knownKeys: string): string {
+  const groups = [...keys].filter(key => fingerMovements[key]).map(key => {
+    const {home} = fingerMovements[key];
+    const peers = [...knownKeys].filter(other => other !== key && (other === home || fingerMovements[other]?.home === home));
+    return peers.flatMap((peer, index) => [
+      `${peer}${key}`,
+      `${key}${peer}`,
+      peer === home ? `${home}${key}${home}` : `${home}${peer}${key}`,
+      `${key}${peer}${peers[(index+peers.length-1)%peers.length]}`,
+      `${peer}${key}${home}${key}`,
+      `${key}${home}${key}${peer}`,
+    ]);
+  });
+  // Wissel de vingers af zodat beide aan bod komen, ook in kortere oefeningen.
+  return Array.from({length:Math.max(0,...groups.map(group=>group.length))}, (_,i) => groups.flatMap(group=>group[i] ? [group[i]] : [])).flat().join(' ');
+}
+
+// Bestaande IDs blijven bij hun lesinhoud; nieuwe lessen krijgen eigen IDs.
+// De bronindex koppelt de oudere woordbanken en oefenlengtes aan de juiste les.
+const courseDefinitions = definitions.flatMap(([title, description, keys, stage, drill, reading], sourceIndex) => {
+  const base = {id:`lesson-${sourceIndex === 2 ? 15 : sourceIndex < 2 ? sourceIndex+1 : sourceIndex}`, title:String(title), description:String(description), keys:String(keys), stage, drill:String(drill), reading:String(reading), extra:String(combinedPractice[sourceIndex]), sourceIndex};
+  if(keys==='vbn') return [
+    {...base, id:'lesson-16', title:'Op naar beneden: V en N', description:'Je linkerwijsvinger gaat van F naar V. Je rechterwijsvinger gaat van J naar N. Oefen daarna de bekende toetsen van elke wijsvinger.', keys:'vn', drill:'fv vf jn nj fv jn', reading:'een vogel vliegt over de tuin ik vind een veer', extra:'de trein rijdt naar de stad de zon staat hoog een vis ligt stil in het net een veer valt op het gras mijn vingers gaan rustig over de toetsen ik lees een verhaal over een vos en een vogel'},
+    {...base, title:'De B erbij', description:'Reik met je linkerwijsvinger van F naar B. Combineer B daarna met F, G, R, T en V.', keys:'b', drill:'fb bf fb bf', extra:combinedPractice[sourceIndex]},
+  ];
+  if(keys==='wxc') return [
+    {...base, id:'lesson-17', title:'De W met je ringvinger', description:'Beweeg van S naar W met je linkerringvinger. Oefen daarna S, Z en W samen.', keys:'w', drill:'sw ws sw ws', reading:'wij wandelen langs het water de wind waait door de bomen', extra:'we werken in de tuin waar witte bloemen groeien de weg loopt langs een weide wij zien een vogel boven het water een warme wind waait over het gras'},
+    {...base, id:'lesson-18', title:'De X met je middelvinger', description:'Beweeg van D naar X met je linkermiddelvinger. Oefen daarna D, E en X samen.', keys:'x', drill:'dx xd dx xd', reading:'de taxi staat klaar voor een extra rit', extra:'de mixer staat op tafel er ligt een extra deken op de bank de taxi rijdt langs het water de tekst staat in een boek ik lees alles nog eens rustig na'},
+    {...base, title:'De C maakt het alfabet compleet', description:'Beweeg van F naar C met je linkerwijsvinger. Combineer C met F, G, R, T, V en B.', keys:'c', drill:'fc cf fc cf'},
+  ];
+  return [base];
+});
+
+export const lessons: Lesson[] = courseDefinitions.map(({id, title, description, keys, stage, drill, reading, extra:practice, sourceIndex:i}, lessonIndex) => {
+  const knownKeys = courseDefinitions.slice(0,lessonIndex+1).map(lesson=>lesson.keys).join('');
+  const words = (wordPractice[i-5] ?? '').split(' ').filter(word=>[...word].every(char=>knownKeys.includes(char))).join(' ');
+  const basic = stage === 'De basisrij';
+  const originalExploration = /[a-z]/.test(keys) ? guidedDrill(keys, drill) : drill;
+  const source = definitions[i];
+  const explorationLength = Math.max(originalExploration.length, /[a-z]/.test(source[2]) ? guidedDrill(source[2], source[4]).length : source[4].length)*2;
+  const originalRhythm = basic ? Array(4).fill(reading).join(' ') : reading;
+  const originalCombined = basic ? `${drill} ${reading}` : `${reading} ${stage === 'De puntjes op de i' ? drill : reading}`;
+  const variety = /[a-z]/.test(keys) ? fingerPractice(drill) : practice;
+  const rhythm = sameFingerRhythm(keys, knownKeys);
+  // De bekende leestekst staat al aan het begin; sla die in de aanvulling over.
+  const extra = practice.startsWith(`${reading} `) ? practice.slice(reading.length+1) : practice;
+  const introduction = [...keys].some(key=>fingerMovements[key]) ? originalExploration.slice(0, -(drill.length+1)) : drill;
+  return {id, title, description, keys, stage, movements:[...keys].filter(key=>fingerMovements[key]).map(key=>({key,...fingerMovements[key]})), exercises: [
+    {title: stage === 'De puntjes op de i' ? 'Verken de zinnen' : 'Verken de toetsen', text:practiceText(introduction, variety, explorationLength)},
+    {title:'Vind je ritme', text:practiceText(rhythm || (basic ? variety : reading), rhythm ? '' : basic ? reading : extra, Math.max(originalRhythm.length*2,rhythm.length))},
+    {title:'Alles samen', text:practiceText(basic ? `${drill} ${reading}` : reading, `${extra} ${words}`, originalCombined.length*5)},
+  ]};
+});
 export const exerciseId = (lesson: number, exercise: number) => `${lessons[lesson].id}-${exercise}`;
 export const totalExercises = lessons.reduce((sum, lesson) => sum + lesson.exercises.length, 0);

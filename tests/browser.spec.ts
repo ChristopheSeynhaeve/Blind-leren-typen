@@ -2,6 +2,21 @@ import { test, expect } from '@playwright/test';
 import { lessons } from '../src/course';
 import { STORAGE_KEY, calculateResult, timeLimit } from '../src/progress';
 
+test('split lower row shows focused rhythm and keeps B for the next lesson',async({page})=>{
+ await page.goto('http://localhost:5173');
+ await page.locator('[data-lesson="10"]').click();
+ await expect(page.locator('.detail-keys')).toHaveText('VN');
+ await page.locator('[data-start="1"]').click();
+ await expect(page.getByRole('heading',{name:'Vind je ritme'})).toBeVisible();
+ await expect(page.locator('.movement-guide')).toContainText('Elke lettergroep met dezelfde vinger');
+ await expect(page.locator('.movement-guide')).toContainText('linkerwijsvinger');
+ await expect(page.locator('#typing-text')).toContainText('frv');
+ await expect(page.locator('.keyboard-key[data-key="b"]')).not.toHaveClass(/learned/);
+ await page.locator('#back').click();
+ await page.locator('[data-lesson="11"]').click();
+ await expect(page.locator('.detail-keys')).toHaveText('B');
+});
+
 test('missed time goal recommends retry but allows continuing', async ({page})=>{
  await page.clock.install();
  await page.goto('http://localhost:5173');
@@ -38,16 +53,16 @@ test('split lesson order, saved lesson history and final navigation', async ({ p
  await page.goto('http://localhost:5173');
  await page.evaluate(({key, result}) => localStorage.setItem(key, JSON.stringify({'lesson-4-0':[result]})), {key: STORAGE_KEY, result:calculateResult(100,100,60000)});
  await page.reload();
- await expect(page.locator('.nav-count')).toHaveText('15');
+ await expect(page.locator('.nav-count')).toHaveText('18');
  await expect(page.locator('[data-lesson="2"]')).toContainText('De ringvingers');
  await expect(page.locator('[data-lesson="3"]')).toContainText('De pinken');
  await page.getByRole('button',{name:'Mijn voortgang'}).click();
  await expect(page.locator('tbody')).toContainText('Naar het midden');
  await page.getByRole('button',{name:'Mijn lessen'}).click();
- await page.locator('[data-lesson="14"]').click();
+ await page.locator('[data-lesson="17"]').click();
  await page.locator('[data-start="2"]').click();
- await expect(page.locator('.exercise-header')).toContainText('Les 15 van 15');
- await page.locator('#typing-input').pressSequentially(lessons[14].exercises[2].text);
+ await expect(page.locator('.exercise-header')).toContainText('Les 18 van 18');
+ await page.locator('#typing-input').pressSequentially(lessons[17].exercises[2].text);
  await page.getByRole('button',{name:'Naar je voortgang'}).click();
  await expect(page.getByRole('heading',{name:'Jouw vooruitgang.'})).toBeVisible();
 });
@@ -60,7 +75,7 @@ test('complete, persist, repeat and filter exercises', async ({ page }) => {
  await expect(page.getByRole('heading',{name:'Mooi gedaan!'})).toBeVisible();
  await expect(page.locator('.result-stats')).toContainText('100%');
  await page.reload();
- await expect(page.locator('.small-progress')).toContainText('1 van 45');
+ await expect(page.locator('.small-progress')).toContainText('1 van 54');
  await page.locator('[data-lesson="0"]').click();
  await expect(page.locator('[data-start="0"]')).toContainText('100%');
  await page.locator('[data-start="0"]').click();
@@ -68,12 +83,12 @@ test('complete, persist, repeat and filter exercises', async ({ page }) => {
  await page.getByRole('button',{name:'Volgende oefening'}).click();
  await page.locator('#typing-input').pressSequentially(lessons[0].exercises[1].text);
  await page.getByRole('button',{name:'Volgende oefening'}).click();
- await page.locator('#typing-input').pressSequentially('fj jf ff jj fj jf fff jjj fjf jfj ffj jjf');
+ await page.locator('#typing-input').pressSequentially(lessons[0].exercises[2].text);
  await page.getByRole('button',{name:'Terug naar mijn lessen'}).click();
  await page.getByRole('button',{name:'Afgerond',exact:true}).click();
  await expect(page.locator('.lesson-row')).toHaveCount(1);
  await page.getByRole('button',{name:'Mijn voortgang'}).click();
- await expect(page.locator('.overview-card').first()).toContainText('3 / 45');
+ await expect(page.locator('.overview-card').first()).toContainText('3 / 54');
 });
 
 test('incorrect attempt, pause, reset and mobile layout',async({page})=>{
