@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import { lessons, totalExercises } from '../src/course';
 import { parseProgress, calculateResult, timeLimit } from '../src/progress';
 
+test('combined exercises offer five times the original practice and finish sentences',()=>{
+ const originalLengths = [41,39,39,41,43,91,81,101,73,95,85,99,115,88,190];
+ for (const [index,lesson] of lessons.entries()) {
+  const text=lesson.exercises[2].text;
+  assert.ok(text.length >= originalLengths[index]*5, `Lesson ${index+1}: too short`);
+  assert.ok(text.length < originalLengths[index]*5+100, `Lesson ${index+1}: excessive length`);
+  assert.equal(text,text.trim());
+  if(lesson.stage==='De puntjes op de i')assert.ok(text.endsWith('.'));
+ }
+});
+
 test('every exercise uses only keys introduced so far',()=>{
  const known = new Set(' ');
  for (const [index,lesson] of lessons.entries()) {
