@@ -115,7 +115,7 @@ test('accuracy and speed include incorrect attempts and enforce completion thres
  assert.ok(Number.isFinite(calculateResult(1,1,0).wpm));
 });
 test('upper and lower row introduction isolates each new key with its own home key',()=>{
- const expected: Record<string,string> = {g:'f',h:'j',a:'q',e:'d',z:'s',r:'f',i:'k',o:'l',t:'f',u:'j',p:'m',y:'j',v:'f',b:'f',n:'j',w:'s',x:'d',c:'f'};
+ const expected: Record<string,string> = {g:'f',h:'j',a:'q',e:'d',z:'s',r:'f',i:'k',o:'l',t:'f',u:'j',p:'m',y:'j',v:'f',b:'f',n:'j',w:'q',x:'s',c:'d'};
  for(const lesson of lessons) {
   const groups=lesson.exercises[0].text.split(' ');
   lesson.movements.forEach((m,index)=>{

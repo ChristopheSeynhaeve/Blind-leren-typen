@@ -8,8 +8,8 @@ const fingerMovements: Record<string, Omit<FingerMovement, 'key'>> = {
   t: {home:'f', finger:'linkerwijsvinger'}, u: {home:'j', finger:'rechterwijsvinger'},
   p: {home:'m', finger:'rechterpink'}, y: {home:'j', finger:'rechterwijsvinger'},
   v: {home:'f', finger:'linkerwijsvinger'}, b: {home:'f', finger:'linkerwijsvinger'},
-  n: {home:'j', finger:'rechterwijsvinger'}, w: {home:'s', finger:'linkerringvinger'},
-  x: {home:'d', finger:'linkermiddelvinger'}, c: {home:'f', finger:'linkerwijsvinger'},
+  n: {home:'j', finger:'rechterwijsvinger'}, w: {home:'q', finger:'linkerpink'},
+  x: {home:'s', finger:'linkerringvinger'}, c: {home:'d', finger:'linkermiddelvinger'},
 };
 const definitions = [
   ['Je eerste toetsen', 'Vind de voelbare streepjes op F en J. Hier rusten je wijsvingers.', 'fj', 'De basisrij', 'fj jf ff jj fj jf', 'fff jjj fjf jfj ffj jjf'],
@@ -23,7 +23,7 @@ const definitions = [
   ['Een groter bereik', 'Beide wijsvingers reiken omhoog: links T, rechts U.', 'tu', 'Woorden bouwen', 'ft tf ju uj te uit', 'de muis zit stil ik lees uit de kast'],
   ['De bovenrij compleet', 'Voeg P met je rechterpink toe en Y met je rechterwijsvinger.', 'py', 'Woorden bouwen', 'mp pm jy yj py po', 'de poes slaapt op de mat de papegaai eet de sla'],
   ['Op naar beneden', 'Met je wijsvingers bereik je V, B en N. Keer steeds terug naar de basisrij.', 'vbn', 'Vlotter typen', 'fv fb jn vf bf nj', 'ik typ een brief de bomen staan in de tuin'],
-  ['Alle letters in de vingers', 'Maak het alfabet compleet met W, X en C op de onderste rij.', 'wxc', 'Vlotter typen', 'sw dx fc ws xd cf', 'wij oefenen elke dag de clown zwaait naar de taxi'],
+  ['Alle letters in de vingers', 'Maak het alfabet compleet met W, X en C op de onderste rij.', 'wxc', 'Vlotter typen', 'qw sx dc wq xs cd', 'wij oefenen elke dag de clown zwaait naar de taxi'],
   ['Van woorden naar zinnen', 'Houd een rustig ritme aan. Gebruik je duim voor de spatie.', '', 'Vlotter typen', 'een kleine stap maakt een groot verschil', 'buiten schijnt de zon en wij wandelen samen door het park'],
   ['Hoofdletters en punten', 'Houd Shift in met de andere hand. De punt typ je met Shift + puntkomma.', '.', 'De puntjes op de i', 'Ik leer typen. Dit gaat al goed.', 'Elke dag een beetje oefenen helpt. Neem rustig de tijd.'],
   ['Je eerste verhaal', 'Combineer alle letters met hoofdletters, punten en komma’s.', ',', 'De puntjes op de i', 'Hallo, wat fijn dat je er bent. We gaan samen aan de slag.', 'De zon schijnt door het raam. Ik zet een kop thee, schuif mijn stoel aan en begin te typen. Met elke les gaat het een beetje beter.'],
@@ -128,9 +128,9 @@ const courseDefinitions = definitions.flatMap(([title, description, keys, stage,
     {...base, title:'De B erbij', description:'Reik met je linkerwijsvinger van F naar B. Combineer B daarna met F, G, R, T en V.', keys:'b', drill:'fb bf fb bf', extra:combinedPractice[sourceIndex]},
   ];
   if(keys==='wxc') return [
-    {...base, id:'lesson-17', title:'De W met je ringvinger', description:'Beweeg van S naar W met je linkerringvinger. Oefen daarna S, Z en W samen.', keys:'w', drill:'sw ws sw ws', reading:'wij wandelen langs het water de wind waait door de bomen', extra:'we werken in de tuin waar witte bloemen groeien de weg loopt langs een weide wij zien een vogel boven het water een warme wind waait over het gras'},
-    {...base, id:'lesson-18', title:'De X met je middelvinger', description:'Beweeg van D naar X met je linkermiddelvinger. Oefen daarna D, E en X samen.', keys:'x', drill:'dx xd dx xd', reading:'de taxi staat klaar voor een extra rit', extra:'de mixer staat op tafel er ligt een extra deken op de bank de taxi rijdt langs het water de tekst staat in een boek ik lees alles nog eens rustig na'},
-    {...base, title:'De C maakt het alfabet compleet', description:'Beweeg van F naar C met je linkerwijsvinger. Combineer C met F, G, R, T, V en B.', keys:'c', drill:'fc cf fc cf'},
+    {...base, id:'lesson-17', title:'De W met je pink', description:'Beweeg van Q naar W met je linkerpink. Oefen daarna Q, A en W samen.', keys:'w', drill:'qw wq qw wq', reading:'wij wandelen langs het water de wind waait door de bomen', extra:'we werken in de tuin waar witte bloemen groeien de weg loopt langs een weide wij zien een vogel boven het water een warme wind waait over het gras'},
+    {...base, id:'lesson-18', title:'De X met je ringvinger', description:'Beweeg van S naar X met je linkerringvinger. Oefen daarna S, Z en X samen.', keys:'x', drill:'sx xs sx xs', reading:'de taxi staat klaar voor een extra rit', extra:'de mixer staat op tafel er ligt een extra deken op de bank de taxi rijdt langs het water de tekst staat in een boek ik lees alles nog eens rustig na'},
+    {...base, title:'De C maakt het alfabet compleet', description:'Beweeg van D naar C met je linkermiddelvinger. Oefen daarna D, E en C samen.', keys:'c', drill:'dc cd dc cd'},
   ];
   return [base];
 });
